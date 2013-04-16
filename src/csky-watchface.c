@@ -48,8 +48,8 @@ void handle_minute_tick(AppContextRef ctx, PebbleTickEvent *t) {
   get_time(&now);
 
   //update the date layer
-  static char dateText[18];
-  string_format_time(dateText, 18, "%B %e %T", &now);
+  static char dateText[25];
+  string_format_time(dateText, 25, "%a %B %e %T", &now);
   text_layer_set_text(&dateLayer, dateText);
 
 
@@ -58,7 +58,7 @@ void handle_minute_tick(AppContextRef ctx, PebbleTickEvent *t) {
 
 
   //rotate the small circle to the minute location
-  unsigned int angle = now.tm_min * 6;
+  unsigned int angle = (now.tm_min + 36)%60 * 6;
   rotbmp_pair_layer_set_angle(&smallImage.layer, TRIG_MAX_ANGLE * angle / 360);
   layer_mark_dirty(&smallImage.layer.layer);
 }
@@ -144,7 +144,7 @@ void pbl_main(void *params) {
 
     .tick_info = {
       .tick_handler = &handle_minute_tick,
-      .tick_units = MINUTE_UNIT
+      .tick_units = SECOND_UNIT
     }
 
   };
