@@ -21,41 +21,64 @@ PBL_APP_INFO(MY_UUID,
              APP_INFO_WATCH_FACE);
 
 Window window;
+PblTm now;
 
+Layer clockLayer;
 TextLayer dateLayer;
+RotBmpPairContainer smallImage;
 
 void handle_second_tick(AppContextRef ctx, PebbleTickEvent *t) {
   (void)t;
   (void)ctx;
 
-  PblTm now;
   get_time(&now);
-  static char dateText[12];
 
+  //update the date layer
+  static char dateText[12];
   string_format_time(dateText, 12, "%B %e", &now);
   text_layer_set_text(&dateLayer, dateText);
 
 
+  unsigned int angle = now.tm_sec * 6;
+  rotbmp_pair_layer_set_angle(&smallImage.layer, TRIG_MAX_ANGLE * angle / 360);
+  layer_mark_dirty(&smallImage.layer.layer);
 }
+
+
 
 
 void handle_init(AppContextRef ctx) {
   (void)ctx;
 
-  window_init(&window, "ConcentricSky");
+  window_init(&window, "Concentric Sky Face");
   window_stack_push(&window, true);
   window_set_background_color(&window, GColorBlack);
 
   resource_init_current_app(&APP_RESOURCES);
 
 
-  //set up date layer
+  /* set up date layer
+   */
   text_layer_init(&dateLayer, GRect(1, 168-16, 144, 16));
   text_layer_set_text_color(&dateLayer, GColorWhite);
   text_layer_set_background_color(&dateLayer, GColorClear);
   text_layer_set_text_alignment(&dateLayer, GTextAlignmentRight);
   text_layer_set_font(&dateLayer, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD));
   layer_add_child(&window.layer, &dateLayer.layer);
+
+
+
+  /* set up small circle layer
+   */
+  rotbmp_pair_init_container(RESOURCE_ID_IMAGE_SMALL_CIRCLE_WHITE, RESOURCE_ID_IMAGE_SMALL_CIRCLE_BLACK, &smallImage);
+  rotbmp_pair_layer_set_src_ic(&smallImage.layer, GPoint(1,1));
+  // using set_src_ic throws off the origin? these magic numbers seem to work
+  // smallImage.layer.layer.frame.origin.x = (144/2) - (smallImage.layer.layer.frame.size.w/2);
+  // smallImage.layer.layer.frame.origin.y = (168/2) - (smallImage.layer.layer.frame.size.h/2);
+  smallImage.layer.layer.frame.origin.x = 21;
+  smallImage.layer.layer.frame.origin.y = 12;
+  layer_add_child(&window.layer, &smallImage.layer.layer);
+
 
 
 
