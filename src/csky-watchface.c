@@ -34,14 +34,28 @@ Layer minuteLayer;
 GPath minute_segment_path;
 
 
+
+const GPoint HOUR_CENTER = {59,82};
 const GPathInfo HOUR_SEGMENT_PATH_POINTS = {
   3,
   (GPoint []) {
     {0,0},
-    {-10,-51},
-    {10,-51},
+    {-12,-51},
+    {11,-51},
   }
 };
+
+
+const GPoint MINUTE_CENTER = {110,110};
+const GPathInfo MINUTE_SEGMENT_PATH_POINTS = {
+  3,
+  (GPoint []) {
+    {0,0},
+    {-4,-38},
+    {4,-38},
+  }
+};
+
 
 
 void handle_minute_tick(AppContextRef ctx, PebbleTickEvent *t) {
@@ -52,7 +66,7 @@ void handle_minute_tick(AppContextRef ctx, PebbleTickEvent *t) {
 
   //update the date layer
   static char dateText[25];
-  string_format_time(dateText, 25, "%a %B %e %T", &now);
+  string_format_time(dateText, 25, "%A %B %e", &now);
   text_layer_set_text(&dateLayer, dateText);
 
 
@@ -75,8 +89,23 @@ void handle_hour_layer_update(Layer *me, GContext *ctx) {
   }
 
   graphics_context_set_fill_color(ctx, GColorWhite);
-  graphics_fill_circle(ctx, GPoint(59, 82), 8);
+  graphics_fill_circle(ctx, HOUR_CENTER, 12);
 
+}
+
+void handle_minute_layer_update(Layer *me, GContext *ctx) {
+  (void)me;
+
+  graphics_context_set_fill_color(ctx, GColorBlack);
+
+  for (int minute = 1; minute <= now.tm_sec; minute++) {
+    unsigned int angle = minute * 6;
+    gpath_rotate_to(&minute_segment_path, TRIG_MAX_ANGLE * angle / 360);
+    gpath_draw_filled(ctx, &minute_segment_path);
+  }
+
+  // graphics_context_set_fill_color(ctx, GColorWhite);
+  // graphics_fill_circle(ctx, MINUTE_CENTER, 3);
 }
 
 
@@ -102,9 +131,16 @@ void handle_init(AppContextRef ctx) {
   layer_init(&hourLayer, window.layer.frame);
   hourLayer.update_proc = handle_hour_layer_update;
   gpath_init(&hour_segment_path, &HOUR_SEGMENT_PATH_POINTS);
-  gpath_move_to(&hour_segment_path, GPoint(59, 82));
+  gpath_move_to(&hour_segment_path, HOUR_CENTER);
   layer_add_child(&window.layer, &hourLayer);
 
+
+
+  layer_init(&minuteLayer, window.layer.frame);
+  minuteLayer.update_proc = handle_minute_layer_update;
+  gpath_init(&minute_segment_path, &MINUTE_SEGMENT_PATH_POINTS);
+  gpath_move_to(&minute_segment_path, MINUTE_CENTER);
+  layer_add_child(&window.layer, &minuteLayer);
 
   /* set up small circle layer
    */
@@ -112,8 +148,6 @@ void handle_init(AppContextRef ctx) {
   smallImage.layer.layer.frame.origin.x = 65;
   smallImage.layer.layer.frame.origin.y = 65;
   layer_add_child(&window.layer, &smallImage.layer.layer);
-
-
 
 
 
