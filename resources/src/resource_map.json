@@ -10,13 +10,13 @@
        },
        {
            "type":"png",
-           "defName":"IMAGE_WATCHFACE_BG",
-           "file":"images/watchface_bg_unoptomized.png"
+           "defName":"IMAGE_WATCHFACE_LG_CIRCLE",
+           "file":"images/watchface_lg_circle.png"
        },
        {
            "type":"png-trans",
-           "defName":"IMAGE_SMALL_CIRCLE",
-           "file":"images/small_circle.png"
+           "defName":"IMAGE_WATCHFACE_SM_CIRCLE",
+           "file":"images/watchface_sm_circle.png"
        }
     ]
 }
