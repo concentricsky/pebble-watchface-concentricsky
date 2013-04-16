@@ -10,8 +10,8 @@
        },
        {
            "type":"png",
-           "defName":"IMAGE_LARGE_CIRCLE",
-           "file":"images/large_circle.png"
+           "defName":"IMAGE_WATCHFACE_BG",
+           "file":"images/watchface_bg_unoptomized.png"
        },
        {
            "type":"png-trans",

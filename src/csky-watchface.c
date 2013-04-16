@@ -23,20 +23,24 @@ PBL_APP_INFO(MY_UUID,
 Window window;
 PblTm now;
 
-Layer hourLayer;
 TextLayer dateLayer;
-RotBmpPairContainer smallImage;
-BmpContainer largeImage;
+// RotBmpPairContainer smallImage;
 
+BmpContainer largeImage;
+Layer hourLayer;
 GPath hour_segment_path;
+
+BmpContainer smallImage;
+Layer minuteLayer;
+GPath minute_segment_path;
 
 
 const GPathInfo HOUR_SEGMENT_PATH_POINTS = {
   3,
   (GPoint []) {
     {0,0},
-    {-7,-50},
-    {7,-50},
+    {-10,-51},
+    {10,-51},
   }
 };
 
@@ -58,9 +62,9 @@ void handle_minute_tick(AppContextRef ctx, PebbleTickEvent *t) {
 
 
   //rotate the small circle to the minute location
-  unsigned int angle = (now.tm_min + 36)%60 * 6;
-  rotbmp_pair_layer_set_angle(&smallImage.layer, TRIG_MAX_ANGLE * angle / 360);
-  layer_mark_dirty(&smallImage.layer.layer);
+  // unsigned int angle = (now.tm_min + 36)%60 * 6;
+  // rotbmp_pair_layer_set_angle(&smallImage.layer, TRIG_MAX_ANGLE * angle / 360);
+  // layer_mark_dirty(&smallImage.layer.layer);
 }
 
 
@@ -68,12 +72,15 @@ void handle_minute_tick(AppContextRef ctx, PebbleTickEvent *t) {
 void handle_hour_layer_update(Layer *me, GContext *ctx) {
   (void)me;
 
-  graphics_context_set_fill_color(ctx, GColorWhite);
+  graphics_context_set_fill_color(ctx, GColorBlack);
 
-  unsigned int angle = (now.tm_hour % 12) * 30;
-  gpath_rotate_to(&hour_segment_path, TRIG_MAX_ANGLE * angle / 360);
+  int TEST_HOUR = 10;
 
-  gpath_draw_filled(ctx, &hour_segment_path);
+  for (int hour = 1; hour <= TEST_HOUR % 12; hour++) {
+    unsigned int angle = (hour % 12) * 30;
+    gpath_rotate_to(&hour_segment_path, TRIG_MAX_ANGLE * angle / 360);
+    gpath_draw_filled(ctx, &hour_segment_path);
+  }
 
 }
 
@@ -82,27 +89,29 @@ void handle_init(AppContextRef ctx) {
 
   window_init(&window, "Concentric Sky Face");
   window_stack_push(&window, true);
-  window_set_background_color(&window, GColorBlack);
+  window_set_background_color(&window, GColorWhite);
 
   resource_init_current_app(&APP_RESOURCES);
+
+
+
+  /* set up large circle layer
+   */
+  bmp_init_container(RESOURCE_ID_IMAGE_WATCHFACE_BG, &largeImage);
+  // largeImage.layer.layer.frame.origin.x = (144-largeImage.layer.layer.frame.size.w)/2;
+  // largeImage.layer.layer.frame.origin.y = (168-largeImage.layer.layer.frame.size.h)/2;
+  // largeImage.layer.layer.frame.origin = grect_center_point(&window.layer.frame);
+  layer_add_child(&window.layer, &largeImage.layer.layer);
 
 
   /* set up date layer
    */
   text_layer_init(&dateLayer, GRect(1, 168-16, 144, 16));
-  text_layer_set_text_color(&dateLayer, GColorWhite);
+  text_layer_set_text_color(&dateLayer, GColorBlack);
   text_layer_set_background_color(&dateLayer, GColorClear);
   text_layer_set_text_alignment(&dateLayer, GTextAlignmentCenter);
   text_layer_set_font(&dateLayer, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD));
   layer_add_child(&window.layer, &dateLayer.layer);
-
-
-  /* set up large circle layer
-   */
-  bmp_init_container(RESOURCE_ID_IMAGE_LARGE_CIRCLE, &largeImage);
-  largeImage.layer.layer.frame.origin.x = (144-largeImage.layer.layer.frame.size.w)/2;
-  largeImage.layer.layer.frame.origin.y = (168-largeImage.layer.layer.frame.size.h)/2;
-  layer_add_child(&window.layer, &largeImage.layer.layer);
 
 
   /* set up the hour hand path
@@ -110,18 +119,20 @@ void handle_init(AppContextRef ctx) {
   layer_init(&hourLayer, window.layer.frame);
   hourLayer.update_proc = handle_hour_layer_update;
   gpath_init(&hour_segment_path, &HOUR_SEGMENT_PATH_POINTS);
-  gpath_move_to(&hour_segment_path, grect_center_point(&largeImage.layer.layer.frame));
+  // gpath_move_to(&hour_segment_path, grect_center_point(&largeImage.layer.layer.frame));
+  gpath_move_to(&hour_segment_path, GPoint(59, 82));
+
   layer_add_child(&window.layer, &hourLayer);
 
 
   /* set up small circle layer
    */
-  rotbmp_pair_init_container(RESOURCE_ID_IMAGE_SMALL_CIRCLE_WHITE, RESOURCE_ID_IMAGE_SMALL_CIRCLE_BLACK, &smallImage);
-  rotbmp_pair_layer_set_src_ic(&smallImage.layer, GPoint(1,1));
+  // rotbmp_pair_init_container(RESOURCE_ID_IMAGE_SMALL_CIRCLE_WHITE, RESOURCE_ID_IMAGE_SMALL_CIRCLE_BLACK, &smallImage);
+  // rotbmp_pair_layer_set_src_ic(&smallImage.layer, GPoint(1,1));
   // using set_src_ic tweaks the origin?
   // smallImage.layer.layer.frame.origin.x = (144/2) - (smallImage.layer.layer.frame.size.w/2);
   // smallImage.layer.layer.frame.origin.y = (168/2) - (smallImage.layer.layer.frame.size.h/2);
-  layer_add_child(&window.layer, &smallImage.layer.layer);
+  // layer_add_child(&window.layer, &smallImage.layer.layer);
 
 
 
