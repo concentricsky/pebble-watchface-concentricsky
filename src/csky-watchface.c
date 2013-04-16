@@ -26,6 +26,7 @@ PblTm now;
 Layer clockLayer;
 TextLayer dateLayer;
 RotBmpPairContainer smallImage;
+BmpContainer largeImage;
 
 void handle_second_tick(AppContextRef ctx, PebbleTickEvent *t) {
   (void)t;
@@ -62,21 +63,26 @@ void handle_init(AppContextRef ctx) {
   text_layer_init(&dateLayer, GRect(1, 168-16, 144, 16));
   text_layer_set_text_color(&dateLayer, GColorWhite);
   text_layer_set_background_color(&dateLayer, GColorClear);
-  text_layer_set_text_alignment(&dateLayer, GTextAlignmentRight);
+  text_layer_set_text_alignment(&dateLayer, GTextAlignmentCenter);
   text_layer_set_font(&dateLayer, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD));
   layer_add_child(&window.layer, &dateLayer.layer);
 
+
+  /* set up large circle layer
+   */
+  bmp_init_container(RESOURCE_ID_IMAGE_LARGE_CIRCLE, &largeImage);
+  largeImage.layer.layer.frame.origin.x = (144-largeImage.layer.layer.frame.size.w)/2;
+  largeImage.layer.layer.frame.origin.y = (168-largeImage.layer.layer.frame.size.h)/2;
+  layer_add_child(&window.layer, &largeImage.layer.layer);
 
 
   /* set up small circle layer
    */
   rotbmp_pair_init_container(RESOURCE_ID_IMAGE_SMALL_CIRCLE_WHITE, RESOURCE_ID_IMAGE_SMALL_CIRCLE_BLACK, &smallImage);
   rotbmp_pair_layer_set_src_ic(&smallImage.layer, GPoint(1,1));
-  // using set_src_ic throws off the origin? these magic numbers seem to work
+  // using set_src_ic tweaks the origin?
   // smallImage.layer.layer.frame.origin.x = (144/2) - (smallImage.layer.layer.frame.size.w/2);
   // smallImage.layer.layer.frame.origin.y = (168/2) - (smallImage.layer.layer.frame.size.h/2);
-  smallImage.layer.layer.frame.origin.x = 21;
-  smallImage.layer.layer.frame.origin.y = 12;
   layer_add_child(&window.layer, &smallImage.layer.layer);
 
 

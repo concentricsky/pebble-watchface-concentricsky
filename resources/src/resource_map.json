@@ -9,6 +9,11 @@
            "file":"images/menu_icon.png"
        },
        {
+           "type":"png",
+           "defName":"IMAGE_LARGE_CIRCLE",
+           "file":"images/large_circle.png"
+       },
+       {
            "type":"png-trans",
            "defName":"IMAGE_SMALL_CIRCLE",
            "file":"images/small_circle.png"
