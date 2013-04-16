@@ -16,7 +16,7 @@
 #define MY_UUID { 0x31, 0x09, 0x0D, 0xE1, 0x82, 0x7E, 0x43, 0x43, 0xA5, 0x78, 0x34, 0x95, 0xA4, 0x4C, 0x22, 0x4B }
 PBL_APP_INFO(MY_UUID,
              "ConcentricSky", "Concentric Sky",
-             1, 1, /* App version */
+             1, 2, /* App version */
              RESOURCE_ID_IMAGE_MENU_ICON,
              APP_INFO_WATCH_FACE);
 
@@ -46,13 +46,13 @@ const GPathInfo HOUR_SEGMENT_PATH_POINTS = {
 };
 
 
-const GPoint MINUTE_CENTER = {110,110};
+const GPoint MINUTE_CENTER = {108,108};
 const GPathInfo MINUTE_SEGMENT_PATH_POINTS = {
   3,
   (GPoint []) {
     {0,0},
-    {-4,-38},
-    {4,-38},
+    {0,-27},
+    {9,-27},
   }
 };
 
@@ -91,6 +91,8 @@ void handle_hour_layer_update(Layer *me, GContext *ctx) {
   graphics_context_set_fill_color(ctx, GColorWhite);
   graphics_fill_circle(ctx, HOUR_CENTER, 12);
 
+
+  graphics_fill_circle(ctx, MINUTE_CENTER, 27);
 }
 
 void handle_minute_layer_update(Layer *me, GContext *ctx) {
@@ -98,14 +100,14 @@ void handle_minute_layer_update(Layer *me, GContext *ctx) {
 
   graphics_context_set_fill_color(ctx, GColorBlack);
 
-  for (int minute = 1; minute <= now.tm_sec; minute++) {
+  for (int minute = 1; minute <= now.tm_min; minute++) {
     unsigned int angle = minute * 6;
     gpath_rotate_to(&minute_segment_path, TRIG_MAX_ANGLE * angle / 360);
     gpath_draw_filled(ctx, &minute_segment_path);
   }
 
-  // graphics_context_set_fill_color(ctx, GColorWhite);
-  // graphics_fill_circle(ctx, MINUTE_CENTER, 3);
+  graphics_context_set_fill_color(ctx, GColorWhite);
+  graphics_fill_circle(ctx, MINUTE_CENTER, 3);
 }
 
 
@@ -180,7 +182,7 @@ void pbl_main(void *params) {
 
     .tick_info = {
       .tick_handler = &handle_minute_tick,
-      .tick_units = SECOND_UNIT
+      .tick_units = MINUTE_UNIT
     }
 
   };

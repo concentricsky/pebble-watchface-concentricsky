@@ -1,5 +1,5 @@
 {
-    "friendlyVersion": "dev_0.0",
+    "friendlyVersion": "dev_1.2",
     "versionDefName": "APP_RESOURCES",
 
     "media": [
@@ -16,7 +16,7 @@
        {
            "type":"png-trans",
            "defName":"IMAGE_WATCHFACE_SM_CIRCLE",
-           "file":"images/watchface_sm_circle.png"
+           "file":"images/watchface_sm_circle-1.png"
        }
     ]
 }
