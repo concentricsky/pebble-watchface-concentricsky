@@ -51,8 +51,8 @@ const GPathInfo MINUTE_SEGMENT_PATH_POINTS = {
   3,
   (GPoint []) {
     {0,0},
-    {0,-27},
-    {9,-27},
+    {0,-25},
+    {9,-25},
   }
 };
 
@@ -100,7 +100,8 @@ void handle_minute_layer_update(Layer *me, GContext *ctx) {
 
   graphics_context_set_fill_color(ctx, GColorBlack);
 
-  for (int minute = 1; minute <= now.tm_min; minute++) {
+  // for (int minute = 1; minute <= now.tm_min; minute++) {
+  for (int minute = 1; minute <= now.tm_sec; minute++) {
     unsigned int angle = minute * 6;
     gpath_rotate_to(&minute_segment_path, TRIG_MAX_ANGLE * angle / 360);
     gpath_draw_filled(ctx, &minute_segment_path);
@@ -182,7 +183,7 @@ void pbl_main(void *params) {
 
     .tick_info = {
       .tick_handler = &handle_minute_tick,
-      .tick_units = MINUTE_UNIT
+      .tick_units = SECOND_UNIT
     }
 
   };
