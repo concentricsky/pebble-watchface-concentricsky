@@ -16,7 +16,7 @@
 #define MY_UUID { 0x31, 0x09, 0x0D, 0xE1, 0x82, 0x7E, 0x43, 0x43, 0xA5, 0x78, 0x34, 0x95, 0xA4, 0x4C, 0x22, 0x4B }
 PBL_APP_INFO(MY_UUID,
              "ConcentricSky", "Concentric Sky",
-             1, 2, /* App version */
+             1, 3, /* App version */
              RESOURCE_ID_IMAGE_MENU_ICON,
              APP_INFO_WATCH_FACE);
 
