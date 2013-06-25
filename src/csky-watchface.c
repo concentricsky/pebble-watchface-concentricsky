@@ -46,13 +46,13 @@ const GPathInfo HOUR_SEGMENT_PATH_POINTS = {
 };
 
 
-const GPoint MINUTE_CENTER = {108,108};
+const GPoint MINUTE_CENTER = {109,106};
 const GPathInfo MINUTE_SEGMENT_PATH_POINTS = {
   3,
   (GPoint []) {
     {0,0},
-    {0,-25},
-    {9,-25},
+    {0,-27},
+    {9,-27},
   }
 };
 
@@ -108,7 +108,10 @@ void handle_minute_layer_update(Layer *me, GContext *ctx) {
   }
 
   graphics_context_set_fill_color(ctx, GColorWhite);
-  graphics_fill_circle(ctx, MINUTE_CENTER, 3);
+  graphics_fill_circle(ctx, MINUTE_CENTER, 6);
+  graphics_draw_circle(ctx, MINUTE_CENTER, 27);
+  graphics_draw_circle(ctx, MINUTE_CENTER, 28);
+  graphics_draw_circle(ctx, MINUTE_CENTER, 29);
 }
 
 
@@ -183,7 +186,7 @@ void pbl_main(void *params) {
 
     .tick_info = {
       .tick_handler = &handle_minute_tick,
-      .tick_units = SECOND_UNIT
+      .tick_units = MINUTE_UNIT
     }
 
   };
