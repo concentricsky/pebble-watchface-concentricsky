@@ -3,7 +3,7 @@
 
 # Concentric Sky Pebble Watchface
 
-This is an open-source Django library developed by [Concentric Sky](http://concentricsky.com/) that provides a watchface for the Pebble watch based on the Concentric Sky logo
+This is an open-source Django library developed by [Concentric Sky](http://concentricsky.com/) that provides a watchface for the Pebble watch based on the Concentric Sky logo. A tutorial is available on the [Concentric Sky blog](http://concentricsky.com/blog/2013/jun/pebble-sdk-watchface-tutorial).
 
 ## License
 
